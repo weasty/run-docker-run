@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const crypto = require('crypto');
+const {spawn} = require('child_process');
+const winston = require('winston');
+const LogMessageTransformer = require('./lib/LogMessageTransformer');
+
+const logger = winston.createLogger({
+  format: winston.format.printf(info => `[${info.id}] ${info.level}: ${info.message}`),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({
+      filename: './docker.log'
+    })
+  ]
+});
+
+const uuid = crypto.randomBytes(16).toString("hex");
+
+const cmd = spawn('docker', process.argv.slice(2));
+logger.info({
+  id: uuid,
+  message: cmd.spawnargs.join(' '),
+});
+
+cmd.stdout
+  .pipe(new LogMessageTransformer(uuid, 'info'))
+  .pipe(logger);
+
+cmd.stderr
+  .pipe(new LogMessageTransformer(uuid, 'error'))
+  .pipe(logger);
+
+cmd.on('error', err => logger.log({
+  id: uuid,
+  level: 'error',
+  message: `Docker process: ${err}`,
+}));
+
+cmd.on('close', code => {
+  console.log(`[${uuid}] info: Exited with code: ${code}`);
+  process.exit(code);
+});
+
+process.on('SIGINT', () => {
+  cmd.kill('SIGTERM');
+});

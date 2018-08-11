@@ -1,0 +1,25 @@
+{
+  "name": "run-docker-run",
+  "version": "0.0.1",
+  "description": "RUN Docker RUN!!!",
+  "main": "docker",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weasty/run-docker-run.git"
+  },
+  "keywords": [
+    "docker"
+  ],
+  "author": "Yauheni Tsialitsyn",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/weasty/run-docker-run/issues"
+  },
+  "homepage": "https://github.com/weasty/run-docker-run#readme",
+  "dependencies": {
+    "winston": "^3.0.0"
+  }
+}

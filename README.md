@@ -1,1 +1,3 @@
-# run-docker-run
+# RUN Docker RUN!!!
+
+just... `./docker run redis`
